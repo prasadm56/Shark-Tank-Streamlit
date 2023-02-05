@@ -3,14 +3,15 @@ import numpy as np
 import streamlit as st
 import plotly.express as px
 from PIL import Image
-import streamlit.components.v1 as components  # Import Streamlit
+import streamlit.components.v1 as components  
+
 
 
 
 
 st.set_page_config(layout='wide')
 
-dff=pd.read_csv('Shark_Tank_India_S1.csv')
+dff=pd.read_csv('C:\\Users\\prasa\\a\\campusx\\c_notes\\project\\Shark_Tank_India_S1.csv')
 col=['episode_number','startup_number', 'brand_name','domain', 'description','deal_amount_lakhs','aman_invested','anupam_invested', 
        'ashneer_invested',  'ghazal_invested','namita_invested', 'peyush_invested',  'vineeta_invested',
        'amount_per_shark', 'equity_per_shark']
@@ -65,13 +66,10 @@ with col5:
    aman=st.button("Aman's Investments")
 
 with col4:
-   #st.header("Ashneer Grover",)
+   
    image = Image.open('ashneer.png')
    st.image(image, caption='Ashneer Grover',width=190)
-  #former co-founder and managing director (MD) of the Indian fintech company BharatPe
-   #st.write("Former co-founder and managing director of BharatPe")
-   #st.metric(label="Investment", value="₹5.39Cr")
-   #st.metric(label="Number of Deals", value="21")
+
    
    st.components.v1.html(
     """
@@ -134,7 +132,7 @@ with col2:
 
 with col6:
    #st.header("Namita Thapar")
-   image = Image.open('namitha.png')
+   image = Image.open('Namitha.png')
    st.image(image, caption='Namita Thapar', width=190)
    st.components.v1.html(
 	"""
@@ -154,7 +152,7 @@ with col6:
 
 with col1:
     #st.header(" Vineeta Singh")
-    image = Image.open('vineta.png')
+    image = Image.open('Vineta.png')
     st.image(image, caption='Vineeta Singh', width=190)
     st.components.v1.html(
 	"""
@@ -194,7 +192,50 @@ with col3:
 
 
     
+ndf['ashneer_True']=ndf['ashneer_invested'].replace({1:'Ashneer'})
+ndf['aman_True']=ndf['aman_invested'].replace({1:'Aman'})
+ndf['anupam_True']=ndf['anupam_invested'].replace({1:'Anupam'})
+ndf['namita_True']=ndf['namita_invested'].replace({1:'Namita'})
+ndf['ghazal_True']=ndf['ghazal_invested'].replace({1:'Ghazal'})
+ndf['vineeta_True']=ndf['vineeta_invested'].replace({1:'Vineeta'})
+ndf['peyush_True']=ndf['peyush_invested'].replace({1:'Peyush'})
+
+
+# Melt the data frame to have each shark as a separate row
+df_melted = ndf.melt(id_vars=['brand_name', 'deal_amount_lakhs','domain','equity_per_shark'], value_vars=['ashneer_True', 'aman_True', 'anupam_True',
+                                                              'namita_True', 'ghazal_True', 'vineeta_True', 'peyush_True'], value_name='shark_name')
+
+# Filter out rows where shark_name is 0 (no investment)
+df_melted = df_melted[df_melted['shark_name'] != 0]
+
+
+columns = st.columns((4, 1, 4 ))
+button_pressed = columns[1].button('All Sharks investments!')
+
+
+if button_pressed==True:
+    close=columns[2].button("close chart")
+    st.components.v1.html(
+	"""
+    <div style="color:white;text-align:center;">
+         <p>
+        <mark>Click on the shark name to view the individual investment amount made by each shark</mark> 
+    </p>
     
+ 
+    </div>
+    
+    """,
+    width=1370,
+    height=50
+)
+    #df_melted = df_melted.assign(domain = pdf.loc[df_melted['brand_name'].index, 'domain'])
+    fig = px.bar(df_melted, x='brand_name', y='deal_amount_lakhs', color='shark_name', width=1000, height=700, text_auto=True, hover_data=['domain','equity_per_shark'],
+             labels={'brand_name': 'Invested Brand Name','deal_amount_lakhs':'Amount by shark/sharks Invested in Lacs(₹)',
+                     'shark_name':'Shark Name','equity_per_shark':"Shark's Equity",'domain':'Domain'},title='All Shark Tank Investment Summary')
+
+    st.plotly_chart(fig, use_container_width=True)
+#st.button("close")    
 
 col1=st.columns(1)
 if aman==True:
@@ -203,12 +244,15 @@ if aman==True:
                  labels={'amount_per_shark':'Amount Invested in Lacs(₹)','brand_name': 'Invested Brand Name','domain':'Domain','equity_per_shark':"Aman's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    #st.bbutton("Close Chart")
+    columns1 = st.columns((4, 1, 4 ))
+    button_pressed1 = columns1[1].button("close chart")
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
          <p>
         <mark>Explore Domain Contributions by clicking on a specific Domain</mark> 
-    </p>
+   		 </p>
  
     </div>
     """,
@@ -219,6 +263,8 @@ if aman==True:
     fig2=px.sunburst(amandf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Aman's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Aman's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=1)
 
                     
 
@@ -231,6 +277,9 @@ if ashneer==True:
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
     #st.dataframe(ashneerdf,use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=3)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -247,6 +296,9 @@ if ashneer==True:
     fig2=px.sunburst(ashneerdf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Ashneer's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Ashneer's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=4)
+
     
     
 col1=st.columns(1)    
@@ -256,6 +308,9 @@ if peyush==True:
                  labels={'brand_name': 'Invested Brand Name','amount_per_shark':'Amount Invested in Lacs(₹)','domain':'Domain','equity_per_shark':"Peyush's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=5)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -272,6 +327,9 @@ if peyush==True:
     fig2=px.sunburst(peyushdf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Peyush's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Peyush's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=6)
+
     
     
 col1=st.columns(1)    
@@ -281,6 +339,9 @@ if namita==True:
                  labels={'brand_name': 'Invested Brand Name','amount_per_shark':'Amount Invested in Lacs(₹)','domain':'Domain','equity_per_shark':"Namita's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=7)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -297,6 +358,9 @@ if namita==True:
     fig2=px.sunburst(namitadf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Namita's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Namita's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=8)
+
     
 col1=st.columns(1)    
 if ghazal==True:
@@ -305,6 +369,9 @@ if ghazal==True:
                  labels={'brand_name': 'Invested Brand Name','amount_per_shark':'Amount Invested in Lacs(₹)','domain':'Domain','equity_per_shark':"Ghazal's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=9)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -321,6 +388,9 @@ if ghazal==True:
     fig2=px.sunburst(ghazaldf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Ghazal's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Ghazal's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=10)
+
     
     
 col1=st.columns(1)    
@@ -330,6 +400,9 @@ if vineeta==True:
                  labels={'brand_name': 'Invested Brand Name','amount_per_shark':'Amount Invested in Lacs(₹)','domain':'Domain','equity_per_shark':"Vineeta's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=11)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -346,6 +419,9 @@ if vineeta==True:
     fig2=px.sunburst(vineetadf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Vineeta's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Vineeta's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=12)
+
     
     
 col1=st.columns(1)    
@@ -355,6 +431,9 @@ if anupam==True:
                  labels={'brand_name': 'Invested Brand Name','amount_per_shark':'Amount Invested in Lacs(₹)','domain':'Domain','equity_per_shark':"Anupam's Equity(%)"},
                  hover_data=['equity_per_shark'])
     st.plotly_chart(fig, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=13)
+
     st.components.v1.html(
 	"""
     <div style="color:white;text-align:center;">
@@ -373,48 +452,7 @@ if anupam==True:
     fig2=px.sunburst(anupamdf,path=['domain','brand_name'],values='amount_per_shark',height=700,width=700,
             labels={'amount_per_shark':"Anupam's investments in Lacs(₹)",'labels':'Company Name','parent':"Domain",'id':'Subdomain'},title="Anupam's Domain specific investments")
     st.plotly_chart(fig2, use_container_width=True)
+    columns2 = st.columns((4, 1, 4 ))
+    button_pressed1=columns2[1].button("close chart",key=14)
+
     
-ndf['ashneer_True']=ndf['ashneer_invested'].replace({1:'Ashneer'})
-ndf['aman_True']=ndf['aman_invested'].replace({1:'Aman'})
-ndf['anupam_True']=ndf['anupam_invested'].replace({1:'Anupam'})
-ndf['namita_True']=ndf['namita_invested'].replace({1:'Namita'})
-ndf['ghazal_True']=ndf['ghazal_invested'].replace({1:'Ghazal'})
-ndf['vineeta_True']=ndf['vineeta_invested'].replace({1:'Vineeta'})
-ndf['peyush_True']=ndf['peyush_invested'].replace({1:'Peyush'})
-
-
-# Melt the data frame to have each shark as a separate row
-df_melted = ndf.melt(id_vars=['brand_name', 'deal_amount_lakhs','domain','equity_per_shark'], value_vars=['ashneer_True', 'aman_True', 'anupam_True',
-                                                              'namita_True', 'ghazal_True', 'vineeta_True', 'peyush_True'], value_name='shark_name')
-
-# Filter out rows where shark_name is 0 (no investment)
-df_melted = df_melted[df_melted['shark_name'] != 0]
-
-
-columns = st.columns((2, 1, 2))
-button_pressed = columns[1].button('All Sharks investments!')
-
-
-if button_pressed==True:
-    close=columns[2].button("close chart")
-    st.components.v1.html(
-	"""
-    <div style="color:white;text-align:center;">
-         <p>
-        <mark>Click on the shark name to view the individual investment amount made by each shark</mark> 
-    </p>
-    <h1 style="color: green;">Anupam's Domain specific investments </h1>
- 
-    </div>
-    
-    """,
-    width=1370,
-    height=50
-)
-    #df_melted = df_melted.assign(domain = pdf.loc[df_melted['brand_name'].index, 'domain'])
-    fig = px.bar(df_melted, x='brand_name', y='deal_amount_lakhs', color='shark_name', width=1000, height=700, text_auto=True, hover_data=['domain','equity_per_shark'],
-             labels={'brand_name': 'Invested Brand Name','deal_amount_lakhs':'Amount by shark/sharks Invested in Lacs(₹)',
-                     'shark_name':'Shark Name','equity_per_shark':"Shark's Equity",'domain':'Domain'},title='All Shark Tank Investment Summary')
-
-    st.plotly_chart(fig, use_container_width=True)
-#st.button("close")
