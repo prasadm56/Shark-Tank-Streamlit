@@ -10,7 +10,7 @@ import streamlit.components.v1 as components  # Import Streamlit
 
 st.set_page_config(layout='wide')
 
-dff=pd.read_csv('C:\\Users\\prasa\\a\\campusx\\c_notes\\project\\Shark_Tank_India_S1.csv')
+dff=pd.read_csv('Shark_Tank_India_S1.csv')
 col=['episode_number','startup_number', 'brand_name','domain', 'description','deal_amount_lakhs','aman_invested','anupam_invested', 
        'ashneer_invested',  'ghazal_invested','namita_invested', 'peyush_invested',  'vineeta_invested',
        'amount_per_shark', 'equity_per_shark']
