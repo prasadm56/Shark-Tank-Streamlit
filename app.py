@@ -154,7 +154,7 @@ with col6:
 
 with col1:
     #st.header(" Vineeta Singh")
-    image = Image.open('Vineta.png')
+    image = Image.open('vineta.png')
     st.image(image, caption='Vineeta Singh', width=190)
     st.components.v1.html(
 	"""
