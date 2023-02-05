@@ -11,7 +11,7 @@ import streamlit.components.v1 as components
 
 st.set_page_config(layout='wide')
 
-dff=pd.read_csv('C:\\Users\\prasa\\a\\campusx\\c_notes\\project\\Shark_Tank_India_S1.csv')
+dff=pd.read_csv('Shark_Tank_India_S1.csv')
 col=['episode_number','startup_number', 'brand_name','domain', 'description','deal_amount_lakhs','aman_invested','anupam_invested', 
        'ashneer_invested',  'ghazal_invested','namita_invested', 'peyush_invested',  'vineeta_invested',
        'amount_per_shark', 'equity_per_shark']
@@ -132,7 +132,7 @@ with col2:
 
 with col6:
    #st.header("Namita Thapar")
-   image = Image.open('Namitha.png')
+   image = Image.open('namitha.png')
    st.image(image, caption='Namita Thapar', width=190)
    st.components.v1.html(
 	"""
@@ -152,7 +152,7 @@ with col6:
 
 with col1:
     #st.header(" Vineeta Singh")
-    image = Image.open('Vineta.png')
+    image = Image.open('vineta.png')
     st.image(image, caption='Vineeta Singh', width=190)
     st.components.v1.html(
 	"""
